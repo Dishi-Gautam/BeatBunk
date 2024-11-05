@@ -1,0 +1,64 @@
+body{
+    background-color: black;
+}
+
+.website-name {
+font-size: 40px;
+color: #FFD700; 
+text-align: center;
+margin: 20px 10px;
+font-weight: bold;
+}
+
+.tagline {
+font-size: 32px;
+color: #CCCCCC;
+margin: 0px 0px 80px 0px ;
+text-align: center;
+
+}
+
+
+.container {
+background-color: rgba(27, 26, 26, 0.764);
+border-radius: 5px;
+width: 600px;
+height: 400px;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content:flex-start;
+position: relative; 
+padding-top: 20px;
+}
+
+h1 {
+color: white;
+margin-bottom: 60px;
+text-align: center;
+
+}
+
+.form-control {
+padding-left: 20px;
+width: 25rem;
+margin-bottom: 30px;
+}
+
+.btn {
+margin-left: 150px;
+margin-top: 20px;
+padding: 10px 15px;
+
+}
+
+.new {
+position: absolute;
+bottom: 10px;
+right: 20px;
+color: white;
+font-size: 1rem;
+cursor: pointer;
+}
+
+
