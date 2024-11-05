@@ -1,4 +1,4 @@
-/* General Styles */
+
 body {
     font-family: Arial, sans-serif;
     background-color: #1e1e2e;
@@ -10,7 +10,7 @@ body {
     margin: 0;
 }
 
-/* Container */
+
 .signup-container {
     width: 100%;
     max-width: 400px;
@@ -21,13 +21,13 @@ body {
     text-align: center;
 }
 
-/* Heading */
+
 h2 {
     color: #7289da;
     margin-bottom: 20px;
 }
 
-/* Form */
+
 form {
     display: flex;
     flex-direction: column;
@@ -54,7 +54,7 @@ input::placeholder {
     color: #b9bbbe;
 }
 
-/* Submit Button */
+
 button {
     margin-top: 20px;
     padding: 12px;
@@ -71,7 +71,7 @@ button:hover {
     background-color: #5b6eae;
 }
 
-/* Link */
+
 a {
     color: #7289da;
     text-decoration: none;
@@ -81,7 +81,7 @@ a:hover {
     text-decoration: underline;
 }
 
-/* Responsive */
+
 @media (max-width: 500px) {
     .signup-container {
         padding: 20px;
