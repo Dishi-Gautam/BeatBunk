@@ -297,6 +297,32 @@ body {
     margin-bottom: 2rem;
 }
 
+#f3 {
+    position: relative;
+    background-image: url('./assests/musicboy.jpg'); /* Fixed the folder name from assests to assets */
+    background-size: cover;
+    background-position: center;
+    border-radius: 25px;
+    overflow: hidden; 
+}
+
+
+#f3::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* Semi-transparent black overlay */
+    z-index: 1; /* Ensures it appears above the background image */
+}
+
+#f3 h2 , #f3 p {
+    position: relative; /* Ensures text is above the overlay */
+    z-index: 2; /* Text is above the overlay */
+}
+
 
 @media (max-width: 768px) {
     .features .feature {

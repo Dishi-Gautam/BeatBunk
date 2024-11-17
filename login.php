@@ -1,65 +1,61 @@
 <?php
-// Enable error reporting for debugging purposes
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+session_start();
 
+// Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $username = $_POST['username'] ?? '';
+    $password = $_POST['password'] ?? '';
 
-    // Get username and password from POST request and trim whitespace
-    $username = trim($_POST['username']);
-    $password = trim($_POST['password']);
-
-    // Check for empty fields
+    // Check if both fields are not empty
     if (empty($username) || empty($password)) {
-        echo "Username or password cannot be empty.";
+        $_SESSION['error'] = "Both fields are required!";
+        header("Location: login.html");
         exit();
     }
 
-    // Database credentials
-    $host = "localhost";
-    $dbusername = "root";
-    $dbpassword = "";
-    $dbname = "beatbunk";
+    // Connect to the database
+    $con = mysqli_connect("localhost", "root", "mini", "beatbunk");
 
-    // Create a database connection
-    $conn = new mysqli($host, $dbusername, $dbpassword, $dbname);
-
-    // Check the database connection
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
-
-    // Use a prepared statement to prevent SQL injection
-    $stmt = $conn->prepare("SELECT * FROM login WHERE username = ? AND password = ?");
-    if (!$stmt) {
-        echo "Error preparing statement: " . $conn->error;
-        $conn->close();
+    // Check the connection
+    if (mysqli_connect_errno()) {
+        $_SESSION['error'] = "Failed to connect to the database.";
+        header("Location: error.html");
         exit();
     }
 
-    // Bind parameters and execute the statement
-    $stmt->bind_param("ss", $username, $password);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    // Retrieve the user from the database based on the username
+    $sql = "SELECT id, username, password FROM users WHERE username = ?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "s", $username);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
 
-    // Debugging output for number of rows found
-    echo "Rows found: " . $result->num_rows . "<br>";
+    // Check if user exists
+    if (mysqli_num_rows($result) > 0) {
+        $user = mysqli_fetch_assoc($result);
 
-    // Check if the query returned a match
-    if ($result->num_rows == 1) {
-        echo "Login successful. Redirecting...";
-        header("Location: index.html"); // Redirect to the homepage
-        exit();
+        // Verify the password
+        if (password_verify($password, $user['password'])) {
+            // Successful login, start session
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['username'] = $user['username'];
+
+            // Redirect to the logged-in homepage
+            header("Location: homepage.php");
+            exit();
+        } else {
+            $_SESSION['error'] = "Incorrect username or password!";
+        }
     } else {
-        echo "Invalid username or password. Redirecting to error page...";
-        header("Location: error.html"); // Redirect to error page
-        exit();
+        $_SESSION['error'] = "User not found!";
     }
 
-    // Close the statement and connection
-    
-    
+    // Close the database connection
+    mysqli_stmt_close($stmt);
+    mysqli_close($con);
 }
 
-
+// If there was an error, redirect to login page
+header("Location: login.html");
+exit();
+?>
