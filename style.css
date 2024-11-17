@@ -57,6 +57,21 @@ body {
 
 }
 
+@keyframes fadeInPop {
+    0% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    70% {
+        opacity: 1;
+        transform: translateY(-2px) scale(1.02); /* Subtle bounce effect */
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
 @keyframes chromaticAberration {
     0% {
         text-shadow: 2px 0 royalblue, -2px 0 rgb(0, 255, 221);
@@ -80,9 +95,9 @@ body {
 }
 .tag-line{
     font-size: 5.5rem;
-    animation: easeInOut 1s ease-in-out forwards;
     margin-top: 35rem;
     color:#ffffff6d ;
+    animation: easeInOut 1s ease-in-out forwards;
     animation: chromaticAberration 0.7s infinite ;
 }
 
@@ -188,6 +203,7 @@ body {
     padding: 5rem 2rem;
     gap: 2rem;
     background-color: #000000; 
+
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -203,9 +219,69 @@ body {
     margin-bottom: 3rem;
     width: 100%;
     height: 100vh;
+    backdrop-filter: blur(5px); 
+    -webkit-backdrop-filter: blur(5px);
     background-color: #5865f24f;
     max-width: 800px;
     border-radius: 25px;
+}
+
+.features :hover{
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease; 
+    cursor: pointer;
+    
+}
+
+#f1 {
+    position: relative;
+    background-image: url('./assests/bbroom.jpg');
+    background-size: cover;
+    background-position: center;
+    border-radius: 25px;
+    overflow: hidden; /* Ensures the overlay doesn't extend beyond the card */
+}
+
+#f2{
+    position: relative;
+    background-image: url('./assests/hh.jpg');
+    background-size: cover;
+    background-position: center;
+    border-radius: 25px;
+    overflow: hidden; 
+}
+
+#f2::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* Semi-transparent black overlay */
+    z-index: 1; /* Ensures it appears above the background image */
+}
+
+#f2 h2 , #f2 p {
+    position: relative; /* Ensures text is above the overlay */
+    z-index: 2; /* Text is above the overlay */
+}
+
+#f1::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* Semi-transparent black overlay */
+    z-index: 1; /* Ensures it appears above the background image */
+}
+
+#f1 h2 , #f1 p {
+    position: relative; /* Ensures text is above the overlay */
+    z-index: 2; /* Text is above the overlay */
 }
 
 .features h2 {
