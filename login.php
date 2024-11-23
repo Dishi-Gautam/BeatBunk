@@ -19,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Check the connection
     if (mysqli_connect_errno()) {
         $_SESSION['error'] = "Failed to connect to the database.";
-        header("Location: error.html");
+        //header("Location: error.html");
         exit();
     }
 

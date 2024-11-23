@@ -1,0 +1,152 @@
+/* General Styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #222;
+    color: #fff;
+}
+
+/* Header */
+header {
+    background-color: #333;
+    padding: 1.5rem;
+    text-align: center;
+}
+
+#beatbunk-logo {
+    height: 50px;
+    width: auto;
+}
+
+/* Navigation Links */
+.nav-links {
+    list-style: none;
+    padding: 0;
+}
+
+.nav-links li {
+    display: inline;
+    margin: 0 15px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+}
+
+/* Main Rooms Section */
+.rooms-list {
+    padding: 2rem;
+    background-color: #000;
+    color: #fff;
+    text-align: center;
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    color: #fff;
+}
+
+/* Room Cards */
+ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: center;
+}
+
+ul li {
+    background-color: #333;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 280px;
+    text-align: left;
+}
+
+ul li:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+ul li h2 {
+    font-size: 1.8rem;
+    color: #fff;
+    margin-bottom: 1rem;
+}
+
+ul li p {
+    color: #ccc;
+    margin-bottom: 1rem;
+}
+
+ul li a {
+    text-decoration: none;
+    color: #5865f2;
+    font-weight: bold;
+}
+
+ul li a:hover {
+    color: #4752c4;
+}
+
+/* Form Section (if needed for filters or actions) */
+.form-container {
+    margin-bottom: 3rem;
+}
+
+.form-container input {
+    padding: 1rem;
+    font-size: 1rem;
+    border: none;
+    background-color: #333;
+    color: #fff;
+    border-radius: 5px;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.form-container button {
+    padding: 1rem;
+    background-color: #5865f2;
+    color: white;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    max-width: 400px;
+    margin: 1rem auto;
+}
+
+.form-container button:hover {
+    background-color: #4752c4;
+}
+
+/* Alert Messages */
+.alert {
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    font-weight: bold;
+    width: 100%;
+    max-width: 400px;
+    margin: 1rem auto;
+}
+
+.alert.error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.alert.success {
+    background-color: #d4edda;
+    color: #155724;
+}
