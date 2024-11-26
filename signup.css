@@ -15,6 +15,22 @@ body {
     margin-bottom: 10px;
 }
 
+.website-name {
+    font-size: 40px;
+    color: #7289da; 
+    text-align: center;
+    margin: 20px 10px;
+    font-weight: bold;
+    }
+    
+    .tagline {
+    font-size: 32px;
+    color: #CCCCCC;
+    margin: 0px 0px 80px 0px ;
+    text-align: center;
+    
+    }
+
 
 
 .signup-container {
