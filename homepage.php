@@ -44,7 +44,6 @@ $username = $_SESSION['username'];
   </div>
 </section>
 
-<!-- Additional content for logged-in user -->
 <div id="tag-line">
   <h2 class="tag-line">Join the beat, Find your bunk</h2>
 </div>
@@ -61,7 +60,7 @@ $username = $_SESSION['username'];
       <br> top DJs from around the world.</p>
   </div>
   
-  <div class="feature">
+  <div class="feature" id="f3">
     <h2>Feature 3</h2>
     <p>Create your own music room, invite friends, and 
       <br> start jamming together.</p>
