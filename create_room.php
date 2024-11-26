@@ -15,28 +15,50 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+// Function to generate a unique room code
+function generateRoomCode($conn) {
+    do {
+        $roomCode = strtoupper(bin2hex(random_bytes(3))); // 6-character random code
+        $checkQuery = "SELECT id FROM rooms WHERE room_code = ?";
+        $stmt = $conn->prepare($checkQuery);
+        $stmt->bind_param("s", $roomCode);
+        $stmt->execute();
+        $stmt->store_result();
+    } while ($stmt->num_rows > 0); // Repeat until unique code is generated
+    $stmt->close();
+    return $roomCode;
+}
+
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $user_id = $_SESSION['user_id'];
-    $room_name = $_POST['room_name'];
-    $genre = $_POST['genre'];
-    $description = $_POST['description'];
-    
-    // Prepare and execute the SQL query to insert the room
-    $query = "INSERT INTO rooms (user_id, room_name, genre, description) VALUES (?, ?, ?, ?)";
+    $room_name = trim($_POST['room_name']);
+    $genre = trim($_POST['genre']);
+    $description = trim($_POST['description']);
+
+    // Validate inputs
+    if (empty($room_name) || empty($genre) || empty($description)) {
+        $_SESSION['error'] = "All fields are required!";
+        header("Location: create_room.php");
+        exit();
+    }
+
+    // Generate a unique room code
+    $room_code = generateRoomCode($conn);
+
+    // Insert the new room into the database
+    $query = "INSERT INTO rooms (user_id, room_name, genre, description, room_code) VALUES (?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($query);
-    
     if ($stmt) {
-        $stmt->bind_param("isss", $user_id, $room_name, $genre, $description);
-        
+        $stmt->bind_param("issss", $user_id, $room_name, $genre, $description, $room_code);
+
         if ($stmt->execute()) {
-            $_SESSION['success'] = "Room created successfully!";
+            $_SESSION['success'] = "Room created successfully! Share the code with your friends: $room_code";
             header("Location: homepage.php");
             exit();
         } else {
             $_SESSION['error'] = "Failed to create room. Please try again.";
         }
-        
         $stmt->close();
     } else {
         $_SESSION['error'] = "Error preparing the statement: " . $conn->error;
@@ -55,7 +77,6 @@ $conn->close();
     <link rel="stylesheet" href="create_room.css">
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
 <header>
@@ -72,9 +93,11 @@ $conn->close();
 <section class="create-room">
     <div class="form-container">
         <h1>Create a New Room</h1>
-        
+
         <?php if (isset($_SESSION['error'])): ?>
             <div class="alert error"><?php echo $_SESSION['error']; unset($_SESSION['error']); ?></div>
+        <?php elseif (isset($_SESSION['success'])): ?>
+            <div class="alert success"><?php echo $_SESSION['success']; unset($_SESSION['success']); ?></div>
         <?php endif; ?>
 
         <form method="POST" action="create_room.php">
@@ -110,3 +133,4 @@ $conn->close();
 
 </body>
 </html>
+            
