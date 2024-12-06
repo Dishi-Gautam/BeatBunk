@@ -1,67 +1,44 @@
-<h1>Manage Room Join Requests</h1>
-<div id="requests"></div>
+<?php
+session_start();
+$conn = new mysqli("localhost", "root", "mini", "beatbunk");
 
-<script>
-    // Connect to the WebSocket server
-    const socket = new WebSocket('ws://127.0.0.1:8081');
+if ($conn->connect_error) {
+    die(json_encode(['success' => false, 'message' => 'Database connection failed']));
+}
 
-    // WebSocket open event
-    socket.onopen = function () {
-        console.log("WebSocket connected.");
-    };
+if (!isset($_SESSION['user_id'])) {
+    echo json_encode(['success' => false, 'message' => 'User not logged in']);
+    exit();
+}
 
-    // WebSocket message event
-    socket.onmessage = function (event) {
-        const data = JSON.parse(event.data);
+$owner_id = $_SESSION['user_id'];
 
-        // Handle join requests
-        if (data.action === 'join_request') {
-            displayJoinRequest(data.user_id, data.room_code);
-        }
-    };
+// Debug: Check if user is the room owner
+file_put_contents('debug.log', "Owner ID: $owner_id\n", FILE_APPEND);
 
-    // Display a join request in the UI
-    function displayJoinRequest(userId, roomCode) {
-        const requestsDiv = document.getElementById('requests');
-        const requestDiv = document.createElement('div');
-        requestDiv.id = `request-${userId}-${roomCode}`;
-        requestDiv.innerHTML = `
-            <div class="request-card">
-                <p><strong>User ID:</strong> ${userId} wants to join <strong>Room:</strong> ${roomCode}</p>
-                <button onclick="approve('${roomCode}', '${userId}', '${requestDiv.id}')">Approve</button>
-                <button onclick="deny('${roomCode}', '${userId}', '${requestDiv.id}')">Deny</button>
-            </div>
-        `;
-        requestsDiv.appendChild(requestDiv);
+if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+    // Fetch join requests for rooms owned by the user
+    $query = $conn->prepare("
+        SELECT rp.id, rp.user_id, rp.room_code, u.username
+        FROM room_participants rp
+        JOIN rooms r ON rp.room_code = r.room_code
+        JOIN users u ON rp.user_id = u.id
+        WHERE r.created_by = ? AND rp.approved = 0
+    ");
+    $query->bind_param("i", $owner_id);
+    $query->execute();
+    $result = $query->get_result();
+    $requests = $result->fetch_all(MYSQLI_ASSOC);
+    file_put_contents('debug.log', "Fetched Requests: " . json_encode($requests) . "\n", FILE_APPEND);
+
+    if ($requests) {
+        echo json_encode(['success' => true, 'requests' => $requests]);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'No pending requests']);
     }
 
-    // Approve a join request
-    function approve(roomCode, userId, requestId) {
-        socket.send(JSON.stringify({ action: 'approve_request', room_code: roomCode, user_id: userId }));
-        removeRequest(requestId);
-    }
+    exit();
+}
 
-    // Deny a join request
-    function deny(roomCode, userId, requestId) {
-        socket.send(JSON.stringify({ action: 'deny_request', room_code: roomCode, user_id: userId }));
-        removeRequest(requestId);
-    }
-
-    // Remove the request from the UI
-    function removeRequest(requestId) {
-        const requestElement = document.getElementById(requestId);
-        if (requestElement) {
-            requestElement.remove();
-        }
-    }
-
-    // Handle WebSocket errors
-    socket.onerror = function (error) {
-        console.error("WebSocket error:", error);
-    };
-
-    // Handle WebSocket closure
-    socket.onclose = function () {
-        console.warn("WebSocket connection closed.");
-    };
-</script>
+$conn->close();
+?>

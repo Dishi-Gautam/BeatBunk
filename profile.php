@@ -73,10 +73,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       <p class="success-msg"><?php echo $success_msg; ?></p>
     <?php endif; ?>
     <form method="POST" action="profile.php">
-      <label for="username">Username:</label>
+      <label for="username"><h2>Username:</h2></label>
       <input type="text" id="username" name="username" value="<?php echo htmlspecialchars($user['username']); ?>" required>
 
-      <label for="email">Email:</label>
+      <label for="email"><h2>Email:</h2></label>
       <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($user['email']); ?>" required>
 
       <button type="submit">Update Profile</button>

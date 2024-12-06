@@ -101,36 +101,34 @@ $conn->close();
         <?php endif; ?>
 
         <form method="POST" action="create_room.php">
-            <label for="room_name">Room Name:</label>
+            <label for="room_name"  style="color:black">Room Name:</label>
             <input type="text" id="room_name" name="room_name" required>
 
-            <label for="genre">Genre:</label>
+            <label for="genre" style="color:black">Genre:</label>
             <input type="text" id="genre" name="genre" required>
 
-            <label for="description">Description:</label>
+            <label for="description"  style="color:black">Description:</label>
             <textarea id="description" name="description" required></textarea>
 
             <button type="submit">Create Room</button>
         </form>
     </div>
 </section>
-
-<footer>
-    <div class="footer-content">
-        <div class="footer-logo">
-            <a href="#" class="logo">Beatbunk</a>
-        </div>
-        <ul class="footer-links">
-            <li><a href="#about">About</a></li>
-            <li><a href="#services">Services</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
+<footer class="footer">
+  <div class="footer-content">
+    <div class="footer-logo">
+      <a href="#" class="logo">Beatbunk</a>
     </div>
-    <div class="footer-bottom">
-        <p>&copy; 2024 Beatbunk. All Rights Reserved.</p>
-    </div>
+    <ul class="footer-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2024 Beatbunk. All Rights Reserved.</p>
+  </div>
 </footer>
-
 </body>
 </html>
             

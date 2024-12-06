@@ -1,74 +1,45 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Join Room</title>
-</head>
-<body>
-    <h1>Join a Room</h1>
-    <input type="text" id="roomCode" placeholder="Enter Room Code">
-    <button id="joinRoom" disabled>Join Room</button>
+<?php
+session_start();
+$conn = new mysqli("localhost", "root", "mini", "beatbunk");
 
-    <div id="status"></div>
+if ($conn->connect_error) {
+    die(json_encode(['success' => false, 'message' => 'Database connection failed']));
+}   
 
-    <script>
-        let socket;  // Declare socket variable outside the function
-        const userId = 'user1';  // Placeholder user ID. Ideally, this should come from the session or login.
+$user_id = $_SESSION['user_id']; // Logged-in user ID
+// $room_code = $_POST['room_code'];
 
-        // Function to create WebSocket connection
-        function connectToServer() {
-            socket = new WebSocket('ws://localhost:8081');  // Create WebSocket connection
+$url_components = parse_url($_SERVER["REQUEST_URI"]);
+parse_str($url_components['query'], $params);
 
-            socket.onopen = function() {
-                console.log('WebSocket connection established');
-            };
+$room_code = $params['room_code'];
 
-            socket.onmessage = function(event) {
-                const data = JSON.parse(event.data);
-                console.log('Message from server:', data);
+// Check if the room exists
+$room_query = $conn->prepare("SELECT id FROM rooms WHERE room_code = ?");
+$room_query->bind_param("s", $room_code);
+$room_query->execute();
+$room_query->store_result();
 
-                if (data.action === 'join_approved') {
-                    document.getElementById('status').textContent = 'Request Approved: You are in the room!';
-                } else if (data.action === 'join_denied') {
-                    document.getElementById('status').textContent = 'Request Denied: You cannot join the room.';
-                } else if (data.action === 'error') {
-                    document.getElementById('status').textContent = `Error: ${data.message}`;
-                }
-            };
+if ($room_query->num_rows > 0) {
+    // Add a pending join request
+    $insert_query = $conn->prepare("INSERT INTO room_participants (room_code, user_id, approved) VALUES (?, ?, 0)");
+    $insert_query->bind_param("si", $room_code, $user_id);
+    if ($insert_query->execute()) {
+        echo json_encode([
+            'success' => true, 
+            'message' => 'Join request sent', 
+        ]);
+        // Redirect to the desired URL
+        header('Location: http://127.0.0.1:5501/Music-player/youtubemusic/index.html');
 
-            socket.onerror = function(error) {
-                console.error('WebSocket Error:', error);
-                document.getElementById('status').textContent = 'WebSocket connection failed!';
-            };
-        }
+        exit(); // Make sure to exit after redirection to stop script execution
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Failed to send request']);
+    }
+} else {
+    echo json_encode(['success' => false, 'message' => 'Invalid room code']);
+}
 
-        // Send the join room request to the server when the button is clicked
-        document.getElementById('joinRoom').onclick = function() {
-            const roomCode = document.getElementById('roomCode').value;
-
-            if (roomCode && socket && socket.readyState === WebSocket.OPEN) {
-                // Send the join request
-                socket.send(JSON.stringify({
-                    action: 'join_room',
-                    room_code: roomCode,
-                    user_id: userId
-                }));
-            } else {
-                alert('Please enter a valid room code or try again later.');
-            }
-        };
-
-        // Listen for input change and enable the Join Room button
-        document.getElementById('roomCode').addEventListener('input', function() {
-            const roomCode = document.getElementById('roomCode').value;
-            document.getElementById('joinRoom').disabled = !roomCode;  // Enable button if room code exists
-        });
-
-        // Connect to WebSocket once the page loads
-        window.onload = function() {
-            connectToServer();  // Connect to the server when the page loads
-        };
-    </script>
-</body>
-</html>
+$room_query->close();
+$conn->close();
+?>

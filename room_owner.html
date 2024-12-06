@@ -1,0 +1,41 @@
+<div id="requests"></div>
+<script>
+    setInterval(() => {
+        fetch('fetch_requests.php?room_code=ROOM_CODE_HERE')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const requestsDiv = document.getElementById('requests');
+                    requestsDiv.innerHTML = ''; // Clear current requests
+                    data.requests.forEach(request => {
+                        const userDiv = document.createElement('div');
+                        userDiv.textContent = request.username;
+
+                        const approveButton = document.createElement('button');
+                        approveButton.textContent = 'Approve';
+                        approveButton.onclick = () => {
+                            fetch('approve_request.php', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                                body: `room_code=ROOM_CODE_HERE&user_id=${request.user_id}&action=approve`
+                            });
+                        };
+
+                        const denyButton = document.createElement('button');
+                        denyButton.textContent = 'Deny';
+                        denyButton.onclick = () => {
+                            fetch('approve_request.php', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                                body: `room_code=ROOM_CODE_HERE&user_id=${request.user_id}&action=deny`
+                            });
+                        };
+
+                        userDiv.appendChild(approveButton);
+                        userDiv.appendChild(denyButton);
+                        requestsDiv.appendChild(userDiv);
+                    });
+                }
+            });
+    }, 5000);
+</script>
